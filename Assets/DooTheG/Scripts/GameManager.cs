@@ -27,6 +27,13 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         holeSets = FindObjectsOfType<HoleSet>();
+
+        Init();
+    }
+
+    void Init()
+    {
+        currTime = playTime;
     }
 
     void StartGame()
@@ -41,12 +48,12 @@ public class GameManager : MonoBehaviour
 
     void EndGame()
     {
-        currTime = 0;
 
         // 몬스터 위치 초기화
         foreach (HoleSet hs in holeSets)
             hs.Monster.Reset();
         
+        Init();
         Debug.Log("게임 종료");
     }
 
@@ -56,10 +63,10 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log(currTime);
             yield return new WaitForSeconds(1f);
-            currTime += 1;
+            currTime -= 1;
     
             // 시간 초과 시 게임 종료
-            if (currTime >= playTime)
+            if (currTime <= 0)
                 IsStart = false;
         }
     }
