@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class HoleSet : MonoBehaviour
 {
@@ -6,15 +7,21 @@ public class HoleSet : MonoBehaviour
 
     [SerializeField] private PosType posType;
 
-    private GameObject Hole;
-    private GameObject Monster;
-    private GameObject Block;
+    private GameObject holeObj;
+    private GameObject monsterObj;
+    private GameObject blockObj;
 
-    void Start()
+    private Monster monster;
+
+    public Monster Monster { get { return monster;} private set { monster = value; } }
+    
+    void Awake()
     {
-        Hole = Util.FindGameObjectInChildWithTag(gameObject, "Hole");
-        Monster = Util.FindGameObjectInChildWithTag(gameObject, "Monster");
-        Block = Util.FindGameObjectInChildWithTag(gameObject, "Block");
+        holeObj = Util.FindGameObjectInChildWithTag(gameObject, "Hole");
+        monsterObj = Util.FindGameObjectInChildWithTag(gameObject, "Monster");
+        blockObj = Util.FindGameObjectInChildWithTag(gameObject, "Block");
+
+        Monster = monsterObj.GetComponent<Monster>();
 
         // 레이어 순서 지정
         SetOrderLayer();
@@ -22,8 +29,8 @@ public class HoleSet : MonoBehaviour
 
     void SetOrderLayer()
     {
-        Hole.GetComponent<SpriteRenderer>().sortingOrder = (int)posType;
-        Monster.GetComponent<SpriteRenderer>().sortingOrder = (int)posType + 1;
-        Block.GetComponent<SpriteRenderer>().sortingOrder = (int)posType + 2;
+        holeObj.GetComponent<SpriteRenderer>().sortingOrder = (int)posType;
+        monsterObj.GetComponent<SpriteRenderer>().sortingOrder = (int)posType + 1;
+        blockObj.GetComponent<SpriteRenderer>().sortingOrder = (int)posType + 2;
     }
 }
