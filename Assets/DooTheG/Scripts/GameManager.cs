@@ -4,9 +4,12 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     HoleSet[] holeSets;
-
-    [SerializeField]
+    
     private bool isStart;
+    
+    [SerializeField] 
+    private float playTime = 60f;
+    private float currTime;
 
     public bool IsStart
     {
@@ -15,7 +18,9 @@ public class GameManager : MonoBehaviour
         {
             isStart = value;
             if (isStart)
-                StartCoroutine(SelectHoleRoutine());
+                StartGame();
+            else
+                EndGame();
         }
     }
 
@@ -24,9 +29,44 @@ public class GameManager : MonoBehaviour
         holeSets = FindObjectsOfType<HoleSet>();
     }
 
+    void StartGame()
+    {
+        // 타이머 시작
+        StartCoroutine(Timer());
+        
+        // 랜덤한 몬스터 점프
+        if (isStart)
+            StartCoroutine(SelectHoleRoutine());
+    }
+
+    void EndGame()
+    {
+        currTime = 0;
+
+        // 몬스터 위치 초기화
+        foreach (HoleSet hs in holeSets)
+            hs.Monster.Reset();
+        
+        Debug.Log("게임 종료");
+    }
+
+    IEnumerator Timer()
+    {
+        while (IsStart)
+        {
+            Debug.Log(currTime);
+            yield return new WaitForSeconds(1f);
+            currTime += 1;
+    
+            // 시간 초과 시 게임 종료
+            if (currTime >= playTime)
+                IsStart = false;
+        }
+    }
+
     IEnumerator SelectHoleRoutine()
     {
-        while (isStart)
+        while (IsStart)
         {
             RandomJumpHole();
             yield return new WaitForSeconds(0.5f);
