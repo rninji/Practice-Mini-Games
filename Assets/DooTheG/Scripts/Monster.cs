@@ -7,6 +7,8 @@ public class Monster : MonoBehaviour
     
     private Vector3 startPos;
     private Animator anim;
+    private SpriteRenderer sprite;
+    
     private bool isJump;
     private bool isClicked;
     [SerializeField] 
@@ -17,6 +19,7 @@ public class Monster : MonoBehaviour
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>(); // TODO : 싱글톤 변경
         startPos = gameObject.transform.position;
         anim = gameObject.GetComponent<Animator>();
+        sprite = gameObject.GetComponent<SpriteRenderer>();
     }
 
     void OnMouseDown()
@@ -29,6 +32,7 @@ public class Monster : MonoBehaviour
         gameObject.transform.position = startPos;
         isJump = false;
         isClicked = false;
+        sprite.color = Color.white;
     }
     
     public void Jump()
@@ -42,11 +46,12 @@ public class Monster : MonoBehaviour
         isJump = true;
         anim.SetTrigger("Jump");
         
-        float jumpLength = anim.GetCurrentAnimatorStateInfo(0).length; // 애니메이션 길이
-        yield return new WaitForSeconds(jumpLength);
+        // float jumpLength = anim.GetCurrentAnimatorStateInfo(0).length; // 애니메이션 길이
+        yield return new WaitForSeconds(1f);
         
         isJump = false;
         isClicked = false;
+        sprite.color = Color.white;
     }
 
     private void Clicked()
@@ -54,6 +59,7 @@ public class Monster : MonoBehaviour
         if (isJump && isClicked == false)
         {
             isClicked = true;
+            sprite.color = Color.red;
             gameManager.GetScore(score);
         }
     }
