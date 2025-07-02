@@ -1,5 +1,7 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,6 +12,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] 
     private float playTime = 60f;
     private float currTime;
+
+    private int score;
+
+    [SerializeField] private TMP_Text timeText;
+    [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private Button startButton;
 
     public bool IsStart
     {
@@ -33,11 +41,18 @@ public class GameManager : MonoBehaviour
 
     void Init()
     {
-        currTime = playTime;
+        SetTime(playTime);
+        GetScore(-score);
     }
 
     void StartGame()
     {
+        // Time, Score 초기화
+        Init();
+        
+        // 시작 버튼 비활성화
+        startButton.gameObject.SetActive(false);
+        
         // 타이머 시작
         StartCoroutine(Timer());
         
@@ -48,27 +63,31 @@ public class GameManager : MonoBehaviour
 
     void EndGame()
     {
-
         // 몬스터 위치 초기화
         foreach (HoleSet hs in holeSets)
             hs.Monster.Reset();
         
-        Init();
-        Debug.Log("게임 종료");
+        // 시작 버튼 활성화
+        startButton.gameObject.SetActive(true);
     }
 
     IEnumerator Timer()
     {
         while (IsStart)
         {
-            Debug.Log(currTime);
             yield return new WaitForSeconds(1f);
-            currTime -= 1;
+            SetTime(-1);
     
             // 시간 초과 시 게임 종료
             if (currTime <= 0)
                 IsStart = false;
         }
+    }
+
+    void SetTime(float time)
+    {
+        currTime += time;
+        timeText.text = $"Time : {currTime}";
     }
 
     IEnumerator SelectHoleRoutine()
@@ -86,5 +105,14 @@ public class GameManager : MonoBehaviour
         Monster selectedMonster = holeSets[ranNum].Monster;
         if (selectedMonster != null)
             selectedMonster.Jump();
+    }
+
+    public void GetScore(int score)
+    {
+        if (isStart)
+        {
+            this.score += score;
+            scoreText.text = $"Score : {this.score}";
+        }
     }
 }
