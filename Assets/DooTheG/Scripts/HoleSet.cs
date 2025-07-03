@@ -3,8 +3,9 @@ using UnityEngine.Serialization;
 
 public class HoleSet : MonoBehaviour
 {
-    public enum PosType { TOP = 0, MIDDLE = 5, BOTTOM = 10}
+    public enum PosType { TOP, MIDDLE, BOTTOM}
 
+    private int layerTerm = 5;
     [SerializeField] private PosType posType;
 
     private GameObject holeObj;
@@ -29,8 +30,8 @@ public class HoleSet : MonoBehaviour
 
     void SetOrderLayer()
     {
-        holeObj.GetComponent<SpriteRenderer>().sortingOrder = (int)posType;
-        monsterObj.GetComponent<SpriteRenderer>().sortingOrder = (int)posType + 1;
-        blockObj.GetComponent<SpriteRenderer>().sortingOrder = (int)posType + 2;
+        holeObj.GetComponent<SpriteRenderer>().sortingOrder = (int)posType * layerTerm;
+        monsterObj.GetComponent<SpriteRenderer>().sortingOrder = (int)posType * layerTerm + 1;
+        blockObj.GetComponent<SpriteRenderer>().sortingOrder = (int)posType * layerTerm + 2;
     }
 }
